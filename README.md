@@ -22,12 +22,12 @@ I've been building with MSVC, which can be installed through Visual Studio Insta
 
 standalone:
 ```
-nuitka --msvc="14.3" --lto=no --standalone --output-dir=dist/ --output-filename=bark src/main.py
+nuitka --msvc="14.3" --lto=no --standalone --disable-console --output-dir=dist/ --output-filename="custom xp curve" src/main.py
 ```
 
 onefile:
 ```
-nuitka --msvc="14.3" --lto=no --onefile --disable-console --output-dir=dist/ --output-filename=bark src/main.py
+nuitka --msvc="14.3" --lto=no --onefile --disable-console --output-dir=dist/ --output-filename="custom xp curve" src/main.py
 ```
 
 ## Installing a fresh venv
