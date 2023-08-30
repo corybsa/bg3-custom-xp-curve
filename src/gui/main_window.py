@@ -19,7 +19,7 @@ class MainWindow(BaseWindow):
     if(os.path.isfile('config.ini') and os.path.exists('config.ini')):
       dpg.configure_app(init_file='config.ini')
     
-    dpg.create_viewport(title='BG3 XP Curve Editor', width=700, height=450)
+    dpg.create_viewport(title='BG3 XP Curve Editor', width=700, height=600)
     dpg.setup_dearpygui()
     dpg.show_viewport()
 
