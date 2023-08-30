@@ -18,11 +18,21 @@ class XpCurveGenerator:
       10: 20_000,
       11: 24_000,
       12: 30_000,
+      13: 20_000,
+      14: 25_000,
+      15: 30_000,
+      16: 30_000,
+      17: 40_000,
+      18: 40_000,
+      19: 50_000,
+      20: 55_000
     }
 
     self.custom_xp_curve = self.base_xp_curve.copy()
     self.xp_modifier = 1.0
+    self.is_level_20 = False
     self.game_folder = None
+    self.mod_name = None
     self.curve_file_first_half = os.path.join('Data', 'Public', 'Shared', 'Stats', 'Generated', 'Data', 'XPData.txt')
     self.curve_file_second_half = os.path.join('Data', 'Public', 'SharedDev', 'Stats', 'Generated', 'Data', 'XPData.txt')
 
@@ -63,7 +73,23 @@ class XpCurveGenerator:
     self.custom_xp_curve[level] = value
   
 
+  def set_is_level_20(self, is_level_20: bool):
+    self.is_level_20 = is_level_20
+
+    if not is_level_20:
+      self.curve_file_first_half = os.path.join('Data', 'Public', 'Shared', 'Stats', 'Generated', 'Data', 'XPData.txt')
+
+  
+  def set_mod_name(self, mod_name: str):
+    self.mod_name = mod_name
+    self.curve_file_first_half = os.path.join('Data', 'Public', self.mod_name, 'Stats', 'Generated', 'Data', 'XPData.txt')
+  
+
   def export_curve(self):
+    if self.is_level_20:
+      self.export_level_20_curve()
+      return
+    
     file1_path = os.path.join(self.game_folder, self.curve_file_first_half)
     file2_path = os.path.join(self.game_folder, self.curve_file_second_half)
     
@@ -78,8 +104,21 @@ class XpCurveGenerator:
       file.write(f'key "MaxXPLevel","5"\n')
     
     with open(file2_path, 'w') as file:
-      for level in range(6, len(self.custom_xp_curve)):
+      for level in range(6, 13):
         file.write(f'key "Level{level}","{self.custom_xp_curve[level]}"\n\n')
       
-      file.write(f'key "MaxXPLevel","{len(self.custom_xp_curve) - 1}"\n')
-    
+      file.write(f'key "MaxXPLevel","12"\n')
+  
+
+  def export_level_20_curve(self):
+    file1_path = os.path.join(self.game_folder, self.curve_file_first_half)
+
+    # create directory
+    Path(os.path.dirname(file1_path)).mkdir(parents=True, exist_ok=True)
+
+    with open(file1_path, 'w') as file:
+      for level in range(1, 21):
+        file.write(f'key "Level{level}","{self.custom_xp_curve[level]}"\n\n')
+      
+      file.write(f'key "MaxXPLevel","20"\n')
+
