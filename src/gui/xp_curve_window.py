@@ -49,7 +49,7 @@ class XpCurveWindow(BaseWindow):
               min_clamped=True,
               max_value=999999999,
               max_clamped=True,
-              callback=lambda id, value: self.check_value(int(id.split('_')[-1]), value),
+              callback=lambda id, value: self.generator.set_level_requirement(int(id.split('_')[-1]), value),
               on_enter=True,
               show=(not self.generator.is_level_20 and cell <= 12) or self.generator.is_level_20
             )
@@ -102,35 +102,6 @@ THIS WILL OVERRIDE ANY MANUAL CHANGES YOU MAKE TO THE XP CURVE!''')
           break
 
         dpg.configure_item(f'{self.table_cell_tag}_{cell}', default_value=self.generator.custom_xp_curve[cell])
-  
-
-  def check_value(self, current_level: int, value: int):
-    self.generator.set_level_requirement(current_level, value)
-    max_level = len(self.generator.custom_xp_curve)
-    
-    # check if the value is greater than the next level's requirement
-    if current_level < max_level:
-      # loop through the remaining levels
-      for next_level in range(current_level + 1, max_level):
-        # get the next value in the curve
-        next_value = self.generator.custom_xp_curve[next_level]
-        diff = next_level - current_level
-
-        if value >= next_value - diff:
-          self.generator.set_level_requirement(next_level, value + diff)
-          dpg.configure_item(f'{self.table_cell_tag}_{next_level}', default_value=value + diff)
-    
-    # check if the value is less than the previous level's requirement
-    if current_level > 1:
-      # loop through the previous levels
-      for prev_level in range(current_level - 1, 0, -1):
-        # get the previous value in the curve
-        prev_value = self.generator.custom_xp_curve[prev_level]
-        diff = current_level - prev_level
-
-        if value <= prev_value + diff:
-          self.generator.set_level_requirement(prev_level, value - diff)
-          dpg.configure_item(f'{self.table_cell_tag}_{prev_level}', default_value=value - diff)
 
 
   def toggle_level_20(self):
