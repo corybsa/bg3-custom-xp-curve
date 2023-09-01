@@ -1,4 +1,4 @@
 dearpygui==1.9.1
-Nuitka==1.7.10
+Nuitka==1.8
 ordered-set==4.1.0
 zstandard==0.21.0

@@ -22,7 +22,7 @@ I've been building with MSVC, which can be installed through Visual Studio Insta
 
 standalone:
 ```
-nuitka --msvc="14.3" --lto=no --standalone --disable-console --output-dir=dist/ --output-filename="custom_xp_curve" src/main.py
+nuitka --msvc="14.3" --lto=no --standalone --disable-console --output-dir=dist/ --output-filename="custom_xp_curve" src/main.py && rm dist/main.dist/ucrtbase.dll && rm dist/main.dist/api-ms-*.dll
 ```
 
 onefile:
