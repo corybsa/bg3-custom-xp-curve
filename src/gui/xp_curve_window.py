@@ -12,11 +12,15 @@ class XpCurveWindow(BaseWindow):
     self.modifier_slider_tag = self.get_random_tag()
     self.checkbox_tag = self.get_random_tag()
     self.mod_name_input_tag = self.get_random_tag()
-    self.rows = 7
+    self.rows = 4
     self.cols = 3
     
     self.generator.add_modifier_changed_listener(self.update_table)
 
+    self.create_window()
+  
+
+  def create_window(self):
     with dpg.window(label='XP Curve', tag=self.tag, show=True, pos=[20, 20], width=600, height=310, no_close=True):
       dpg.add_text('This table will update as you change the modifier.\nThe values shown will be the new requirements for each level.')
       dpg.add_separator()
@@ -24,7 +28,13 @@ class XpCurveWindow(BaseWindow):
       self.create_table()
       self.create_slider()
       self.create_checkbox()
-      self.create_mod_name_input()
+
+      if self.generator.is_level_20:
+        self.create_mod_name_input()
+  
+
+  def destroy(self):
+    dpg.delete_item(self.tag)
 
 
   def create_table(self):
@@ -54,9 +64,10 @@ class XpCurveWindow(BaseWindow):
               show=(not self.generator.is_level_20 and cell <= 12) or self.generator.is_level_20
             )
 
-            # show default values in tooltips
-            with dpg.tooltip(f'{self.table_cell_tag}_{cell}'):
-              dpg.add_text(f'Default value: {self.generator.base_xp_curve[cell]}')
+            if (not self.generator.is_level_20 and cell <= 12) or self.generator.is_level_20:
+              # show default values in tooltips
+              with dpg.tooltip(f'{self.table_cell_tag}_{cell}'):
+                dpg.add_text(f'Default value: {self.generator.base_xp_curve[cell]}')
   
 
   def create_slider(self):
@@ -106,29 +117,21 @@ THIS WILL OVERRIDE ANY MANUAL CHANGES YOU MAKE TO THE XP CURVE!''')
 
   def toggle_level_20(self):
     self.generator.set_is_level_20(not self.generator.is_level_20)
-
-    if not self.generator.is_level_20:
-      dpg.configure_item(self.mod_name_input_tag, show=False)
-      dpg.configure_item(f'{self.mod_name_input_tag}_tooltip', show=False)
-    else:
-      dpg.configure_item(self.mod_name_input_tag, show=True)
-      dpg.configure_item(f'{self.mod_name_input_tag}_tooltip', show=True)
-
-    # show or hide the last 8 items in the table
-    for row in range(13, 21):
-      dpg.configure_item(f'{self.table_cell_tag}_{row}', show=self.generator.is_level_20)
+    self.rows = 7 if self.generator.is_level_20 else 4
+    self.destroy()
+    self.create_window()
 
 
   def create_mod_name_input(self):
     dpg.add_input_text(
       label='Level 20 Mod Name',
       tag=self.mod_name_input_tag,
-      show=False,
+      show=True,
       width=200,
       callback=lambda id, value: self.generator.set_mod_name(value)
     )
 
-    with dpg.tooltip(self.mod_name_input_tag, tag=f'{self.mod_name_input_tag}_tooltip', show=False):
+    with dpg.tooltip(self.mod_name_input_tag, tag=f'{self.mod_name_input_tag}_tooltip', show=True):
       dpg.add_text('''Enter the name of your mod here.
 This will be used to create the correct folder structure for compatibility with your mod.
 For example, if you use "UnlockLevelCurve", then that's what you should enter.
