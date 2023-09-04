@@ -34,7 +34,14 @@ class SaveCurveWindow(BaseWindow):
 
   def create_buttons(self):
     dpg.add_button(label='Set Game Folder', callback=lambda: dpg.show_item(self.game_folder_file_dialog_tag))
+
+    with dpg.tooltip(dpg.last_item()):
+      dpg.add_text('Select the folder where your game is installed.')
+
     dpg.add_button(label='Export Curve', callback=lambda: self.export_curve())
+
+    with dpg.tooltip(dpg.last_item()):
+      dpg.add_text('Apply the current curve to a the game. This will overwrite any existing curve.')
   
 
   def create_text(self):
