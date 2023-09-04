@@ -74,7 +74,7 @@ class XpCurveWindow(BaseWindow):
     dpg.add_slider_float(
       label='XP Modifier (?)',
       tag=self.modifier_slider_tag,
-      default_value=1.0,
+      default_value=1 / self.generator.xp_modifier,
       min_value=0.1,
       max_value=20.0,
       clamped=True,
